@@ -1,0 +1,1 @@
+This is a calculator built with HTML, CSS, jQuery and some vanilla JavaScript. This is the final project for the JS secion in The Odin Project's Web Development curriculum.
