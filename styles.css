@@ -19,6 +19,11 @@ body {
     color: white;
 }
 
+.calcButton:active {
+    border: solid 1px #000;
+    color: #000;
+}
+
 .opButton,
 .opOtherButton {
     background: #F5642B;
@@ -28,6 +33,12 @@ body {
 .opOtherButton:hover {
     background: #D1430A;
     color: white;
+}
+
+.opButton:active,
+.opOtherButton:active {
+    border: solid 1px #000;
+    color: #000;
 }
 
 .container-fluid {

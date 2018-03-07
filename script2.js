@@ -4,18 +4,11 @@ var operator = '';
 var total;
 var key;
 
-$('#clearAll').click(() => reset());
-$('#clear').click(() => {
-    clear();
-});
-
 
 // ==========================
 //   Keyboard listeners
 // ==========================
-// It doesnt work for the operators except = and clear
 $(document).keydown((e) => {
-    //console.log(e.keyCode);
     key = e.keyCode;
     switch (key) {
         case 8: // delete/backspace
@@ -23,13 +16,8 @@ $(document).keydown((e) => {
             break;
         case 13: // Enter
         case 187: // equal sign
-            checkLastOperator();
-            total = Number(Math.round(eval(equation) + 'e4') + "e-4");
-            $('#numField').text(total);
-            equation += "=";
-            displayEquation();
+            equal();
             break;
-        case 46: // 46 should be the keyCode for decimal
         case 48: // numbers 
         case 49:
         case 50:
@@ -40,19 +28,20 @@ $(document).keydown((e) => {
         case 55:
         case 56:
         case 57:
-            if (equation[equation.length - 1] === "=" || $('#numField').text().match(/ERROR/)) {
+            if (equation[equation.length - 1] === "=") {
                 reset();
-            } else {
-                // into #numField and equation I need to put the number associated with the keyCode
-                var str = String.fromCharCode(key);
-                $('#numField').append(str);
-                equation += str;
             }
+            var str = String.fromCharCode(key);
+            num += str;
+            displayNum();
+            equation += str;
             displayEquation();
             break;
-        case 190: // '.'
-            if (!$('#numField').text().match(/\./g)) {
-                $('#numField').append('.');
+        case 190: // '.' period
+        case 110: // '.' decimal
+            if (!num.match(/\./g)) {
+                num += '.';
+                displayNum();
                 equation += '.';
                 displayEquation();
             }
@@ -61,59 +50,58 @@ $(document).keydown((e) => {
             checkLastOperator();
             operator = '*';
             equation += "*";
-            $('#numField').text('');
+            clearNumDisplay();
             displayEquation();
             break;
         case 107: // +
             checkLastOperator();
             operator = '+';
             equation += "+";
-            $('#numField').text('');
+            clearNumDisplay();
             displayEquation();
             break;
         case 109: // -
             checkLastOperator()
             operator = '-';
             equation += "-";
-            $('#numField').text('');
+            clearNumDisplay();
             displayEquation();
             break;
         case 191: // /
             checkLastOperator();
             operator = '/';
             equation += "/";
-            $('#numField').text('');
+            clearNumDisplay();
             displayEquation();
             break;
-            //        default:
-            //            $('#numField').text('WHOOPS');
-            //            break;
     }
 });
 
+// ==========================
+//   Mouse Click Listeners
+// ==========================
+$('#clearAll').click(() => reset());
+
+$('#clear').click(() => clear());
 
 $('#equals').click(() => {
-    checkLastOperator();
-    total = Number(Math.round(eval(equation) + 'e4') + "e-4");
-    $('#numField').text(total);
-    equation += "=";
-    displayEquation();
+    equal();
 });
 
-//How do I listen for each number and operator, without writing all this for each key??
 $('.calcButton').click(() => {
-    if (equation[equation.length - 1] === "=" || $('#numField').text().match(/ERROR/)) {
+    if (equation[equation.length - 1] === "=") {
         reset();
     }
     if (event.target.id == "period") {
-        if (!$('#numField').text().match(/\./g)) {
-            $('#numField').append('.');
-            equation += ('.');
+        if (!num.match(/\./g)) {
+            num += '.';
+            equation += '.';
         }
     } else {
-        $('#numField').append(event.target.id);
+        num += event.target.id;
         equation += event.target.id
     }
+    displayNum();
     displayEquation();
 });
 
@@ -138,7 +126,7 @@ $('.opButton').click(() => {
             equation += "/";
             break;
     }
-    $('#numField').text('');
+    clearNumDisplay();
     displayEquation();
 });
 
@@ -149,11 +137,25 @@ $('.opButton').click(() => {
 const reset = () => {
     equation = '';
     displayEquation();
-    $('#numField').text('');
+    clearNumDisplay();
+}
+
+const equal = () => {
+    checkLastOperator();
+    total = Number(Math.round(eval(equation) + 'e4') + "e-4");
+    num = total;
+    displayNum();
+    equation += "=";
+    displayEquation();
 }
 
 const displayNum = () => {
     $('#numField').text(num);
+}
+
+const clearNumDisplay = () => {
+    num = '';
+    displayNum();
 }
 
 const displayEquation = () => {
@@ -162,8 +164,8 @@ const displayEquation = () => {
 
 const clear = () => {
     equation = equation.slice(0, -1);
-    $('#numField').text().slice(0, -1);
-
+    num = num.toString().slice(0, -1);
+    displayNum();
     displayEquation();
 }
 const checkLastOperator = () => {
