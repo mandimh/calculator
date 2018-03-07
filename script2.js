@@ -67,7 +67,8 @@ $(document).keydown((e) => {
             clearNumDisplay();
             displayEquation();
             break;
-        case 191: // /
+        case 191: // / forward slash
+        case 111: // / divide
             checkLastOperator();
             operator = '/';
             equation += "/";
